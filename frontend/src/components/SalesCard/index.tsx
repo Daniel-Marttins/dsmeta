@@ -12,17 +12,28 @@ function SalesCard() {
 
     //Create function for state change of component
     //Change state of date
-    const [minDate, setMinDate] = useState(new Date());
-    const [maxDate, setMaxDate] = useState(new Date());
+
+    const min = new Date(new Date().setDate(new Date().getDate() - 365));
+    const max = new Date();
+
+    const [minDate, setMinDate] = useState(new Date(min));
+    const [maxDate, setMaxDate] = useState(new Date(max));
 
     const [sales, setSales] = useState<Sale[]>([]);
 
     useEffect(() => {
-        axios.get(`${BASE_URL}/sales`)
+
+        const dmin = minDate.toISOString().slice(0, 10);
+        const dmax = maxDate.toISOString().slice(0, 10);
+
+        console.log(dmin)
+        console.log(dmax)
+
+        axios.get(`${BASE_URL}/sales?minDate=${dmin}&maxDate=${dmax}`)
             .then(response => {
                 setSales(response.data.content);
             })
-    }, []);
+    }, [minDate, maxDate]);
 
 
     //Return basic page html inside reactjs
